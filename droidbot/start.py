@@ -89,6 +89,8 @@ def parse_args():
                         help="Ignore Ad views by checking resource_id.")
     parser.add_argument("-replay_output", action="store", dest="replay_output",
                         help="The droidbot output directory being replayed.")
+    parser.add_argument("-monitor", action="store_true", dest="monitor",
+                        help="Monitor with Frida script.")
     options = parser.parse_args()
     # print options
     return options

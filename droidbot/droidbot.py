@@ -81,7 +81,7 @@ class DroidBot(object):
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
         self.replay_output = replay_output
-        self.replay_output = monitor
+        self.monitor = monitor
 
         self.enabled = True
 
