@@ -13,7 +13,8 @@ from .device import Device
 from .app import App
 from .env_manager import AppEnvManager
 from .input_manager import InputManager
-
+from droidbot import monitor
+import time
 
 class DroidBot(object):
     """
@@ -45,7 +46,7 @@ class DroidBot(object):
                  humanoid=None,
                  ignore_ad=False,
                  replay_output=None,
-                 monitor=False):
+                 monitor=False): #add by gnolus
         """
         initiate droidbot with configurations
         :return:
@@ -81,7 +82,14 @@ class DroidBot(object):
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
         self.replay_output = replay_output
+
+        #add by gnolus
         self.monitor = monitor
+        self.running = False
+        self.current_app = None
+        self.monitor_thread = None
+        self.executed_APIs = []
+        self.sensitive_behaviors = []
 
         self.enabled = True
 
@@ -152,6 +160,14 @@ class DroidBot(object):
                 return
             self.env_manager.deploy()
 
+            #add by gnolus
+            if self.monitor:
+                self.running = True
+                self.current_app = self.app
+                import threading
+                self.monitor_thread = threading.Thread(target=self._monitor_APIs_on_droidbot())
+                self.monitor_thread.start()
+
             if not self.enabled:
                 return
             if self.droidbox is not None:
@@ -196,6 +212,20 @@ class DroidBot(object):
             proxy = xmlrpc.client.ServerProxy(self.input_manager.policy.master)
             proxy.stop_worker(self.device.serial)
 
+    #add by gnolus
+    def _monitor_APIs_on_droidbot(self):
+        self.monitor = monitor.Monitor()
+        self.monitor.serial = self.device.serial
+        self.monitor.packageName = self.current_app.get_package_name()
+        self.monitor.pid = self.device.get_app_pid(self.monitor.packageName)
+        self.monitor.set_up_droidbot()
+        while self.running:
+            self.monitor.check_env()
+            time.sleep(5)
+            self.sensitive_behaviors += self.monitor.get_sensitive_api()
+            self.executed_APIs = self.monitor.get_interested_api()
+            pass
 
+        self.monitor.stop()
 class DroidBotException(Exception):
     pass

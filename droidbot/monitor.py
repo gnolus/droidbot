@@ -25,6 +25,9 @@ class Monitor(object):
         self.first_trigger_time = 0
         self.trigger_number = 0
 
+        #add by gnolus
+        self.pid = None
+
     def set_up(self):
         self._setLogPath()
         if self.serial is not None:
@@ -37,6 +40,21 @@ class Monitor(object):
             self._load_script(self.session, self.pid)
         else:
             self.logger.error("Package not found")
+        return
+
+    #add by gnolus
+    def set_up_droidbot(self):
+        self._setLogPath()
+        if self.serial is not None:
+            self._start_server()
+        else:
+            self.logger.error("Device not found")
+            return
+        if self.pid is not None:
+            self._attach_to_pid(self.pid)
+            self._load_script(self.session, self.pid)
+        else:
+            self.logger.error("App PID not found")
         return
 
     def _setLogPath(self):
@@ -95,6 +113,19 @@ class Monitor(object):
         self.logger.info("successfully attached to app")
         return
 
+    #add by gnolus
+    def _attach_to_pid(self, packageName):
+        try:
+            self.device = frida.get_usb_device()
+            self.session = self.device.attach(self.pid)
+        except Exception as e:
+            self.logger.error("[ERROR]: %s" % str(e))
+            self.logger.info("waiting for process")
+            # self.notify()
+            return None
+        self.attached = True
+        self.logger.info("successfully attached to app")
+        return
     def _detach(self, session):
         session.detach()
         self.attached = False

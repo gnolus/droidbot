@@ -89,6 +89,7 @@ def parse_args():
                         help="Ignore Ad views by checking resource_id.")
     parser.add_argument("-replay_output", action="store", dest="replay_output",
                         help="The droidbot output directory being replayed.")
+    # add by gnolus
     parser.add_argument("-monitor", action="store_true", dest="monitor",
                         help="Monitor with Frida script.")
     options = parser.parse_args()
@@ -142,7 +143,7 @@ def main():
             humanoid=opts.humanoid,
             ignore_ad=opts.ignore_ad,
             replay_output=opts.replay_output,
-            monitor=opts.monitor)
+            monitor=opts.monitor) #add by gnolus
         droidmaster.start()
     else:
         droidbot = DroidBot(
@@ -169,7 +170,7 @@ def main():
             humanoid=opts.humanoid,
             ignore_ad=opts.ignore_ad,
             replay_output=opts.replay_output,
-            monitor=opts.monitor)
+            monitor=opts.monitor) #add by gnolus
         droidbot.start()
     return
 
