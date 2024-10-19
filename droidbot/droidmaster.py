@@ -64,7 +64,8 @@ class DroidMaster(object):
                  qemu_no_graphic=False,
                  humanoid=None,
                  ignore_ad=False,
-                 replay_output=None):
+                 replay_output=None,
+                 monitor=False):
         """
         initiate droidmaster, and
         initiate droidbot's with configurations
@@ -99,6 +100,7 @@ class DroidMaster(object):
         self.humanoid = humanoid
         self.ignore_ad = ignore_ad
         self.replay_output = replay_output
+        self.monitor = monitor
 
         # 2. Initiate Device Pool
         self.domain = "localhost"
